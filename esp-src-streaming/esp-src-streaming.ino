@@ -4,8 +4,10 @@
 #include "pins.h"
 #include <Wire.h>
 #include <BH1750.h>
+#include <NeoPixelBus.h>
 
 // Declaring sensor variables
+
 // PIR
 int motionVal = 0;
 int pirState = LOW;
@@ -13,24 +15,26 @@ unsigned long motionStartTime = 0;
 const unsigned long ON_DURATION = 5000;
 
 // LUX
-
 unsigned long previousMillisLux = 0;
 const long intervalLux = 5000;
 float lux;
 
 // STATUS
-
 bool lastPresenceSent = false;
 bool currentPresence = false;
 
 // LED
-#define pwmChannel 0
 bool ledState = false;
 int brightness = 0;
+int red=255;
+int green=0;
+int blue=0;
+int last_color[4]={255,0,0};
+
+NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(NUM_LEDS, RGB_PIN);
 
 // MODE
 int currentMode = 0;
-
 
 BH1750 lightMeter;
 
@@ -47,17 +51,23 @@ void streamCallback(FirebaseStream data)
   if(path == "/mode"){
     currentMode = data.intData();
     Serial.println("Mode: " + String(currentMode));
-  }
-
-  if(path == "/status/ledState"){
+  }else if(path == "/status/ledState"){
     ledState = data.boolData();
     digitalWrite(LED_PIN, ledState);
     Serial.println("LED State: " + String(ledState));
-  }
-
-  if(path == "/manual/brightness"){
+  }else if(path == "/manual/brightness"){
     brightness = data.intData();
     Serial.println("Brightness: " + String(brightness));
+  }
+  if(path == "/manual/color"){
+    FirebaseJson &json = data.jsonObject();
+    
+    FirebaseJsonData result;
+    if (json.get(result, "r")) red = result.intValue;
+    if (json.get(result, "g")) green = result.intValue;
+    if (json.get(result, "b")) blue = result.intValue;
+    
+    Serial.println("R:" + String(red) + " G:" + String(green) + " B:" + String(blue));
   }
   Serial.println("Stream data received...");
 }
@@ -108,13 +118,6 @@ void readLuxSensor(){
   }
 }
 
-// SET LED BRIGHTNESS
-
-void setBrightness(int percent){
-  int pwm = map(percent, 0, 100, 0, 255);
-  ledcWrite(LED_PIN, pwm);
-}
-
 // HANDLE AUTO MODE
 
 void handleAuto()
@@ -123,29 +126,53 @@ void handleAuto()
   {
     if (currentPresence == true)
     {
-      setBrightness(100);
+      //setbrightness full
     }
     else
     {
-      setBrightness(0);
+      //setbrightness 0
     }
   }
   else
   {
-    setBrightness(0);
+    //setbrightness 0
   }
 }
 
+// UPDATE COLOR
+
+void updateColor(int r, int g, int b, int percent){
+  int scale = map(percent, 0, 100, 0, 255);
+  RgbColor color(
+    (r * scale) / 255,
+    (g * scale) / 255,
+    (b * scale) / 255
+  );
+  for (int i = 0; i < NUM_LEDS; i++){
+    strip.SetPixelColor(i, color);
+  }
+  strip.Show();
+}
+
+void clearColor(){
+  strip.ClearTo(RgbColor(0,0,0));
+  strip.Show();
+}
+
+
 void setup()
 {
+
   Serial.begin(115200);
 
+  // Initializing sensors and LED strip
   pinMode(PIR_PIN, INPUT);
-
-  ledcAttach(LED_PIN, 5000, 8); // 5000 e frecventa, 8 e rezolutia
-
+  strip.Begin();
+  strip.Show();
   Wire.begin();
   lightMeter.begin();
+
+// Waiting for Wi-Fi connection
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to WiFi");
@@ -155,9 +182,10 @@ void setup()
     Serial.print(".");
     delay(300);
   }
-
   Serial.println();
   Serial.println("Connected!");
+
+// Initializing Firebase connection
 
   config.api_key = API_KEY;
   config.database_url = DATABASE_URL;
@@ -181,7 +209,7 @@ void setup()
   {
     Serial.println("Stream started successfully");
   }
-
+  
   Firebase.RTDB.setStreamCallback(&stream, streamCallback, streamTimeoutCallback);
 }
 
@@ -192,9 +220,13 @@ void loop()
     Serial.println("Firebase not ready...");
   }
   if(currentMode == 0){
-    if(ledState)
-      setBrightness(brightness);
-    else setBrightness(0);
+    if(ledState){
+      updateColor(red, green, blue, brightness);
+
+    }
+    else{
+      clearColor();
+    }
   }
   else{
     // automatic
