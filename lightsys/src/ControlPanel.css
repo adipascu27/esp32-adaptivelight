@@ -326,3 +326,240 @@
   .cp-header { padding: 1rem 1.25rem; }
   .cp-main { padding: 1.25rem; }
 }
+
+.cp-colormode-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.cp-colormode-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 4px;
+    border-radius: 10px;
+    border: 1px solid #2a2a32;
+    background: transparent;
+    color: #6b6b80;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+.cp-colormode-btn:hover {
+    border-color: #3a3a48;
+    color: #c4c4d4;
+}
+
+.cp-colormode-btn.active {
+    background: #1e1630;
+    border-color: #6d47c4;
+    color: #a78bfa;
+}
+
+.cp-colormode-icon {
+    font-size: 18px;
+}
+
+/* ── Auto dashboard ───────────────────────────────────────── */
+.auto-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Lux card */
+.auto-lux-card {}
+
+.auto-lux-visual {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.auto-lux-icon {
+    font-size: 3rem;
+    line-height: 1;
+    transition: color 0.6s ease;
+    flex-shrink: 0;
+}
+
+.auto-lux-right {
+    flex: 1;
+}
+
+.auto-lux-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    line-height: 1;
+    margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+}
+
+.auto-lux-unit {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #6b6b80;
+    margin-left: 4px;
+}
+
+.auto-lux-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    transition: color 0.6s ease;
+}
+
+.auto-lux-bar-track {
+    height: 4px;
+    background: #2a2a36;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.auto-lux-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.8s ease, background 0.6s ease;
+    min-width: 4px;
+}
+
+.auto-lux-thresholds {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    color: #45454f;
+    margin-top: 8px;
+}
+
+/* Status grid */
+.auto-status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.auto-stat-card {
+    text-align: center;
+}
+
+.auto-stat-indicator {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #1e1e24;
+    border: 2px solid #2a2a36;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px auto;
+    transition: all 0.3s ease;
+}
+
+.auto-stat-indicator.active {
+    background: #0f2a1a;
+    border-color: #4ade80;
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+}
+
+.auto-stat-indicator.led-on {
+    background: #1e1630;
+    border-color: #a78bfa;
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.3);
+}
+
+.auto-stat-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #2a2a36;
+    transition: background 0.3s ease;
+    display: block;
+}
+
+.auto-stat-indicator.active .auto-stat-dot {
+    background: #4ade80;
+}
+
+.auto-stat-indicator.led-on .auto-stat-dot {
+    background: #a78bfa;
+}
+
+.auto-stat-label {
+    font-size: 0.78rem;
+    color: #6b6b80;
+    margin: 0;
+}
+
+/* Countdown */
+.auto-countdown-card {
+    text-align: center;
+}
+
+.auto-countdown-timer {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #a78bfa;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+    margin: 8px 0;
+}
+
+.auto-countdown-bar-track {
+    height: 4px;
+    background: #2a2a36;
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.auto-countdown-bar-fill {
+    height: 100%;
+    background: #6d47c4;
+    border-radius: 999px;
+    transition: width 1s linear;
+}
+
+.auto-countdown-sub {
+    font-size: 0.75rem;
+    color: #45454f;
+    margin: 6px 0 0 0;
+}
+
+.auto-countdown-inactive {
+    font-size: 0.85rem;
+    color: #45454f;
+    margin: 12px 0 0 0;
+}
+
+/* Meta */
+.auto-meta-card {}
+
+.auto-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #1e1e24;
+    font-size: 0.83rem;
+}
+
+.auto-meta-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.auto-meta-key {
+    color: #6b6b80;
+}
+
+.auto-meta-val {
+    color: #c4c4d4;
+    font-weight: 500;
+}
