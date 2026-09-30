@@ -36,7 +36,7 @@ bool currentPresence = false;
 
 // LED
 bool ledState = true;
-int NUM_LEDS=15;
+int NUM_LEDS=300;
 int brightness = 25;
 int red=255;
 int green=0;
